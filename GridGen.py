@@ -1,5 +1,6 @@
 import random
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 def generate_node(x_size, y_size, backhaul=False):
@@ -30,8 +31,25 @@ def plot_grid(grid):
     plt.show()
 
 
+def calc_distance(node_1, node_2):
+    return ((node_1[0]-node_2[0])**2+(node_1[1]-node_2[1])**2)**(1/2)
+
+
+def calc_all_distances(grid):
+    distance_matrix = np.zeros((100, 100))
+    for count, node in enumerate(grid):
+        for count_2 in range(count, len(grid)):
+            node_2 = grid[count_2]
+            distance_matrix[count, count_2] = distance_matrix[count_2, count] = calc_distance(node, node_2)
+
+    return distance_matrix
+
+
 random.seed(1)
 grid = generate_grid()
 plot_grid(grid)
 grid_frame = pd.DataFrame(grid)
 grid_frame.to_csv("grid.csv")
+distances = calc_all_distances(grid)
+distance_frame = pd.DataFrame(distances)
+distance_frame.to_csv("distances.csv")
