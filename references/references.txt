@@ -1,0 +1,7 @@
+# verkeersprognose dataset Amsterdam
+
+https://maps.amsterdam.nl/open_geodata/?k=253
+
+# SEL for a car
+
+https://pulsarinstruments.com/en/applications/vehicle-noise
