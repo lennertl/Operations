@@ -2,7 +2,7 @@
 #################################### PACKAGES ###########################################
 #########################################################################################
 
-import numpy as np 
+import numpy as np
 import os
 import pandas as pd
 import time
@@ -68,6 +68,36 @@ v[0] = model.addVar(lb=0, ub=1, vtype=GRB.BINARY, name="v[0]")		# depot needs to
 for i in bh:
 	v[i] = model.addVar(lb=0, ub=1, vtype=GRB.BINARY, name="v[%s]"%(i))	
     
+model.update()
+
+#########################################################################################
+################################# OBJECTIVE #############################################
+#########################################################################################
+
+edges = {}
+edges['Distance'] = []
+edges['From'] = []
+edges['To'] = []
+for i in range(100):
+	for j in range(100):
+		edges['Distance'].append(distance_frame[str(i)][j])
+		edges['From'].append(i)
+		edges['To'].append(j)
+
+obj = LinExpr()
+
+c_r = 0.01
+alpha = c_r  # assuming flat surface
+beta = 3  # drag
+w = 10000  # truck weight
+f = 0  # load carried
+vel = 90 / 3.6  # velocity used for drag calculation
+
+for i in range(0,len(edges)):
+	obj += (alpha*(w+f)+beta*vel**2)*edges['Distance'][i]*x[edges['From'][i],edges['To'][i]]
+
+
+model.setObjective(obj, GRB.MINIMIZE)
 model.update()
 
 #########################################################################################
