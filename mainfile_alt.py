@@ -151,3 +151,27 @@ for i in lh:
 	for j in bh:
 		thisLHS += x[i,j]
 model.addConstr(lhs=thisLHS, sense=GRB.EQUAL, rhs=1, name='lh_priority')
+
+# Equation 14
+thisLHS = LinExpr()
+for i in range(len(customers)):
+	for j in range(len(customers)):
+		if i !=j:
+			thisLHS += f[j, i] - f[i, j]
+	if i in lh:
+		model.addConstr(lhs=thisLHS, sense=GRB.EQUAL, rhs=a)
+	if j in bh:
+		model.addConstr(lhs=thisLHS, sense=GRB.EQUAL, rhs=b)
+
+
+# Equation 15 & 16
+for i in range(len(customers)):
+	for j in range(len(customers)):
+		if i < 70:
+			thislhs = a*x[i, j]
+			thisrhs = (q-a)*x[i, j]
+		else:
+			thislhs = b*x[i, j]
+			thisrhs = (q-b)*x[i, j]
+		model.addConstr(lhs=thislhs, sense=GRB.LESS_EQUAL, rhs=f[i, j])
+		model.addConstr(lhs=f[i,j], sense=GRB.LESS_EQUAL, rhs=thisrhs)
