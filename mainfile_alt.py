@@ -70,6 +70,13 @@ for i in bh:
     
 model.update()
 
+# Load carried
+f = {}
+for i in range(len(customers)):
+	for j in range(len(customers)):
+		f[i,j] = model.addVar(lb=0, ub=3000, vtype=GRB.INTEGER,name="f[%s,%s]"%(i,j))
+
+
 #########################################################################################
 ################################# OBJECTIVE #############################################
 #########################################################################################
@@ -94,7 +101,7 @@ f = 0  # load carried
 vel = 90 / 3.6  # velocity used for drag calculation
 
 for i in range(0,len(edges)):
-	obj += (alpha*(w+f)+beta*vel**2)*edges['Distance'][i]*x[edges['From'][i],edges['To'][i]]
+	obj += (alpha*(w+f[edges['From'][i], edges['To'][i]])+beta*vel**2)*edges['Distance'][i]*x[edges['From'][i],edges['To'][i]]
 
 
 model.setObjective(obj, GRB.MINIMIZE)
