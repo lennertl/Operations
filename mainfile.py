@@ -13,6 +13,7 @@ import time
 from gurobipy import Model,GRB,LinExpr
 import pickle
 from copy import deepcopy
+import matplotlib.pyplot as plt
 
 # get distances df
 os.chdir("../data")
@@ -258,3 +259,17 @@ for v in model.getVars():		# iterate over all vars
 
 print(solution)
 
+## plotting
+x_coord = customers['x']
+y_coord = customers['y']
+backhaul = customers['Backhaul']
+for i in range(len(x_coord)):
+	if backhaul[i]:
+		plt.scatter(x_coord[i], y_coord[i], c="red")
+	else:
+		plt.scatter(x_coord[i], y_coord[i], c="green")
+for i in range(len(customers)):
+	for j in range(len(customers)):
+		if x[i, j].x:
+			plt.plot([x_coord[i], x_coord[j]], [y_coord[i], y_coord[j]], c='blue')
+plt.show()

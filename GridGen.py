@@ -15,7 +15,7 @@ def generate_node(x_size, y_size, backhaul=False):
     x_coord = random.randint(-x_size, x_size)
     y_coord = random.randint(-y_size, y_size)
     backhaul = backhaul
-    node = (x_coord, y_coord, backhaul)
+    node = [x_coord, y_coord, backhaul]
     return node
 
 
@@ -28,11 +28,11 @@ def generate_grid(size=(200, 200), backhaul_rate=30, number_of_nodes=100):
     :return: grid: list containing nodes
     """
     nodes = []
-    while len(nodes) < backhaul_rate*number_of_nodes/100:
-        node = generate_node(size[0]/2, size[1]/2, backhaul=True)
+    while len(nodes) < (100-backhaul_rate)*number_of_nodes/100:
+        node = generate_node(size[0]/2, size[1]/2, backhaul=False)
         nodes.append(node)
     while len(nodes) < number_of_nodes:
-        node = generate_node(size[0]/2, size[1]/2, backhaul=False)
+        node = generate_node(size[0]/2, size[1]/2, backhaul=True)
         nodes.append(node)
     return nodes
 
@@ -77,10 +77,25 @@ def calc_all_distances(grid):
 
 
 random.seed(1)
-grid = generate_grid()
+grid = generate_grid(backhaul_rate=30, number_of_nodes=10)
+minimum_distance = 1000
+closest_node = 0
+for i in range(len(grid)):
+    node = grid[i]
+    distance_to_zero = node[0]**2 + node[1]**2
+    if distance_to_zero < minimum_distance:
+        minimum_distance = distance_to_zero
+        closest_node = i
+temp = grid[0]
+if grid[closest_node][2]:
+    temp[2] = True
+else:
+    temp[2] = False
+grid[0] = grid[closest_node]
+grid[closest_node] = temp
 plot_grid(grid)
 grid_frame = pd.DataFrame(grid)
-grid_frame.to_csv("grid.csv")
+grid_frame.to_csv("grid2.csv")
 distances = calc_all_distances(grid)
 distance_frame = pd.DataFrame(distances)
 distance_frame.to_csv("distances.csv")
