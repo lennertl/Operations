@@ -40,7 +40,7 @@ distance = distance_frame.iloc[:,1:].to_numpy()
 daytime = daytime_frame.iloc[:,1:].to_numpy()
 
 # load the data for this instance
-customers = pd.read_csv(os.path.join(cwd,instance_name))
+customers = pd.read_csv(instance_name)
 
 # Keeping track of the start time of the model (for overall performance eval)
 startTime = time.time()
@@ -263,13 +263,19 @@ print(solution)
 x_coord = customers['x']
 y_coord = customers['y']
 backhaul = customers['Backhaul']
-for i in range(len(x_coord)):
+plt.scatter(x_coord[0], y_coord[0], c="orange", label='depot')
+backhaul_label = 'backhaul'
+linehaul_label = 'linehaul'
+for i in range(1, len(x_coord)):
 	if backhaul[i]:
-		plt.scatter(x_coord[i], y_coord[i], c="red")
+		plt.scatter(x_coord[i], y_coord[i], c="red", label=backhaul_label)
+		backhaul_label = '__nolegend__'
 	else:
-		plt.scatter(x_coord[i], y_coord[i], c="green")
+		plt.scatter(x_coord[i], y_coord[i], c="green", label='linehaul')
+		linehaul_label = '__nolegend__'
 for i in range(len(customers)):
 	for j in range(len(customers)):
 		if x[i, j].x:
 			plt.plot([x_coord[i], x_coord[j]], [y_coord[i], y_coord[j]], c='blue')
+plt.legend()
 plt.show()

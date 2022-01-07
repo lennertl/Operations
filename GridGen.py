@@ -28,6 +28,7 @@ def generate_grid(size=(200, 200), backhaul_rate=30, number_of_nodes=100):
     :return: grid: list containing nodes
     """
     nodes = []
+    nodes.append([0, 0, False])
     while len(nodes) < (100-backhaul_rate)*number_of_nodes/100:
         node = generate_node(size[0]/2, size[1]/2, backhaul=False)
         nodes.append(node)
@@ -43,7 +44,8 @@ def plot_grid(grid):
     :param grid
     :return: None
     """
-    for node in grid:
+    plt.scatter(grid[0][0], grid[0][1], c='orange')
+    for node in grid[1:]:
         if node[2]:
             plt.scatter(node[0], node[1], c="red")
         else:
@@ -77,25 +79,10 @@ def calc_all_distances(grid):
 
 
 random.seed(1)
-grid = generate_grid(backhaul_rate=30, number_of_nodes=10)
-minimum_distance = 1000
-closest_node = 0
-for i in range(len(grid)):
-    node = grid[i]
-    distance_to_zero = node[0]**2 + node[1]**2
-    if distance_to_zero < minimum_distance:
-        minimum_distance = distance_to_zero
-        closest_node = i
-temp = grid[0]
-if grid[closest_node][2]:
-    temp[2] = True
-else:
-    temp[2] = False
-grid[0] = grid[closest_node]
-grid[closest_node] = temp
+grid = generate_grid(backhaul_rate=30, number_of_nodes=51)
 plot_grid(grid)
 grid_frame = pd.DataFrame(grid)
-grid_frame.to_csv("grid2.csv")
+grid_frame.to_csv("grid51.csv")
 distances = calc_all_distances(grid)
 distance_frame = pd.DataFrame(distances)
-distance_frame.to_csv("distances.csv")
+distance_frame.to_csv("distances51.csv")
